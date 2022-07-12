@@ -1,6 +1,8 @@
 <template>
   <div style="padding: 10px">
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 

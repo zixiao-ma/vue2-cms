@@ -12,20 +12,20 @@ export const columns = [
     {
         title: '角色',
         key: 'name',
-        width: 100
+        width: 140
     },
 
     {
         title: '编码',
-        align: 'code',
-        width: 150
+        key: 'code',
+        width: 100
     },
     {
         title: '描述',
         key: 'remark'
     },
     {
-        title: '注册时间',
+        title: '创建时间',
         key: 'createTime',
         width: 180
     },

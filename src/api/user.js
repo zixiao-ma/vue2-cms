@@ -77,6 +77,49 @@ const getRoleList = (data) => {
         data
     })
 }
+const getMenuList = (data) => {
+    return request({
+        url: '/sys/menu/list',
+        method: "get",
+        data
+    })
+}
+const userAssign = (id, data) => {
+    return request({
+        url: '/sys/user/assign/' + id,
+        method: "post",
+        data
+    })
+}
+const roleAdd = (data) => {
+    return request({
+        url: '/sys/role/add',
+        method: 'post',
+        data
+    })
+}
+const editRoleInfo = (data) => {
+    return request({
+        url: '/sys/role/update',
+        method: "put",
+        data
+    })
+}
+const deleteRole = (params) => {
+    return request({
+        url: '/sys/role/del',
+        method: "DELETE",
+        data: params
+    })
+}
+const AssignPermissions = (roleId, integers) => {
+    return request({
+        url: `/sys/role/perm/${roleId}`,
+        method: 'post',
+        data: integers
+    })
+}
+
 export default {
     getCaptcha,
     login,
@@ -86,5 +129,11 @@ export default {
     addUser,
     delUser,
     editUserInfo,
-    getRoleList
+    getRoleList,
+    userAssign,
+    roleAdd,
+    editRoleInfo,
+    deleteRole,
+    AssignPermissions,
+    getMenuList
 }

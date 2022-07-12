@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search">
-      <Input v-model="pageModel.username" enter-button="查询" inline placeholder="请输入用户名" search
+      <Input v-model="pageModel.name" enter-button="查询" inline placeholder="请输入用户名" search
              @on-search="getUserList"/>
       <Button type="primary" @click="addUserBtn">新增</Button>
 
@@ -19,7 +19,7 @@
         </template>
         <template slot="operating" slot-scope="{ row }">
           <Button size="small" type="success" @click="editUserBtn(row)">编辑</Button>
-          <Button size="small" type="warning">分配权限</Button>
+          <Button size="small" type="warning" @click="btnPermission(row)">分配权限</Button>
           <Button size="small" type="error" @click="delUser(row)">删除</Button>
         </template>
       </Table>
@@ -36,28 +36,31 @@
     >
       {{ modalStatus }}
       <Form ref="formInline" :label-width="80" :model="formInline" :rules="ruleInline">
-        <FormItem label="头像">
-          <Avatar :src="formInline.avatar"
-                  shape="square"/>
+
+        <FormItem label="用户名" prop="name">
+          <Input v-model="formInline.name" placeholder="name" type="text"></Input>
         </FormItem>
-        <FormItem label="用户名" prop="username">
-          <Input v-model="formInline.username" placeholder="Username" type="text"></Input>
-        </FormItem>
-        <FormItem label="密码" prop="password">
-          <Input v-model="formInline.password" placeholder="Password" type="password">
+        <FormItem label="编码" prop="code">
+          <Input v-model="formInline.code" placeholder="code" type="password">
           </Input>
         </FormItem>
-        <FormItem label="邮箱" prop="email">
-          <Input v-model="formInline.email" placeholder="email" type="email">
+        <FormItem label="描述" prop="remark">
+          <Input v-model="formInline.remark" placeholder="remark">
           </Input>
         </FormItem>
         <FormItem label="状态">
           <RadioGroup v-model="formInline.status">
-            <Radio label="1">启用</Radio>
-            <Radio label="0">禁用</Radio>
+            <Radio :value="1" label="1">启用</Radio>
+            <Radio :value="0" label="0">禁用</Radio>
           </RadioGroup>
         </FormItem>
       </Form>
+    </Modal>
+    <Modal
+        v-model="modal2"
+        title="分配权限"
+        @on-ok="handleAssignPermissions">
+      <Tree :data="treeData" show-checkbox @on-check-change="getSelectedNodes"></Tree>
     </Modal>
   </div>
 </template>
@@ -66,31 +69,25 @@
 import userApi from '@/api/user'
 import ruleInline from "@/utils/ruleInline";
 import {DeepCopy} from "@/utils/DeepCopy";
-import {columns} from "@/views/users/TableColumns";
-/*avatar: "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-8e360403-b17a-4c03-87b3-832ad7eb5fde/944e2483-68a2-47b6-b4fd-9e65f5a8c76d.jpg"
-createTime: "2022-06-11 00:16:16"
-deleted: 0
-email: "51318492321@qq.com"
-id: 1
-password: "$2a$10$d9i937oB8s8wtJcOltCsGuo/SotfhA1tBheRXplciT7cfz/5LJwBO"
-roles: Array(1)
-status: 1
-updateTime: "2022-07-11 19:55:01"
-username: "duck"*/
+import {columns} from "./TableColumns";
+import {filterTreeData} from "@/views/roles/utils/FilterTreeData";
+
 export default {
   data() {
     return {
+      treeData: [],
       ruleInline,
+      modal2: false,
       formInline: {
-        username: '',
-        password: '',
-        email: '',
-        status: 0,
-        avatar: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-5a307996-a7f5-483d-a6f1-6ea9944b0d18/94d8e009-b183-4d54-a389-724181af5362.jpg'
+        name: '',
+        code: '',
+        remark: '',
+        status: 0
       },
       modalStatus: 'add',
       modal1: false,
       total: 10,
+      PermissionsID: null,
       loading: false,
       color: ['primary', 'success', 'error', 'warning', 'magenta', 'volcano', 'orange', 'gold'],
       userList: [],
@@ -98,7 +95,7 @@ export default {
       pageModel: {
         current: 1,
         size: 10,
-        username: '',
+        name: '',
         total: 0
 
       }
@@ -106,13 +103,14 @@ export default {
   },
   created() {
     this.getUserList()
+
   },
   methods: {
     async getUserList() {
       try {
         this.loading = true
         const res = await userApi.getRoleList(this.pageModel)
-        console.log(res)
+
         this.userList = res.records
         this.pageModel.total = res.total
       } catch (error) {
@@ -149,10 +147,10 @@ export default {
         title: '删除用户',
         content: `您确定要删除用户【${row.username}】吗？`,
         onOk: async () => {
-          await userApi.delUser([row.id])
+          await userApi.deleteRole([row.id])
           this.$Modal.remove();
           this.$Message.success('删除成功！');
-          this.getUserList()
+          await this.getUserList()
         }
       });
     },
@@ -162,12 +160,27 @@ export default {
       this.formInline = DeepCopy(row)
     },
     async addNewUser() {
-      await userApi.addUser(this.formInline)
+      await userApi.roleAdd(this.formInline)
       await this.getUserList()
     },
     async editUserInfo() {
-      await userApi.editUserInfo(this.formInline)
+      await userApi.editRoleInfo(this.formInline)
       await this.getUserList()
+    },
+    async handleAssignPermissions(params) {
+      const res = await userApi.AssignPermissions(this.PermissionsID, params)
+      await this.getUserList()
+      this.$Message.success('分配成功！');
+    },
+    async btnPermission(row) {
+      this.PermissionsID = row.id
+      this.treeData = filterTreeData(this.$store.getters.menus)
+      this.modal2 = true
+      console.log(row)
+    },
+    getSelectedNodes(data) {
+      const arr = data.map(item => item.id)
+      this.handleAssignPermissions(arr)
     }
   },
 }

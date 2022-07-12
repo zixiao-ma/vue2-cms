@@ -27,5 +27,11 @@ export default {
     ],
     email: [
         {validator: checkEmail, trigger: 'blur', required: true,}
+    ],
+    name: [
+        {required: true, message: 'Please fill in the user name', trigger: 'blur'}
+    ],
+    remark: [
+        {required: true, message: 'Please fill in the user name', trigger: 'blur'}
     ]
 }

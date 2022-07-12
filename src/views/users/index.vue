@@ -19,7 +19,7 @@
         </template>
         <template slot="operating" slot-scope="{ row }">
           <Button size="small" type="success" @click="editUserBtn(row)">编辑</Button>
-          <Button size="small" type="warning">分配权限</Button>
+          <Button size="small" type="warning" @click="btnPermissions(row)">分配角色</Button>
           <Button size="small" type="error" @click="delUser(row)">删除</Button>
         </template>
       </Table>
@@ -59,6 +59,14 @@
         </FormItem>
       </Form>
     </Modal>
+    <Modal
+        v-model="modal2"
+        title="分配权限"
+        @on-ok="assignPermissions">
+      <Select v-model="selectValue" :max-tag-count="2" multiple>
+        <Option v-for="item in selectRoleList" :key="item.value" :value="item.id">{{ item.name }}</Option>
+      </Select>
+    </Modal>
   </div>
 </template>
 
@@ -81,6 +89,7 @@ export default {
   data() {
     return {
       ruleInline,
+      modal2: false,
       formInline: {
         username: '',
         password: '',
@@ -100,8 +109,10 @@ export default {
         size: 10,
         username: '',
         total: 0
-
-      }
+      },
+      permissionId: null,
+      selectValue: [],
+      selectRoleList: []
     }
   },
   created() {
@@ -167,6 +178,20 @@ export default {
     async editUserInfo() {
       await userApi.editUserInfo(this.formInline)
       await this.getUserList()
+    },
+    async btnPermissions(row) {
+      this.selectValue = row.roles.map(item => item.id)
+      const res = await userApi.getRoleList(this.pageModel)
+      this.selectRoleList = res.records
+      this.permissionId = row.id
+      if (res.records) {
+        this.modal2 = true
+      }
+
+    },
+    async assignPermissions() {
+      const res = await userApi.userAssign(this.permissionId, this.selectValue)
+      this.$Message.success('分配成功！');
     }
   },
 }
