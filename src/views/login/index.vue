@@ -93,6 +93,8 @@ export default {
   justify-content: center;
   padding-top: 10%;
   align-items: flex-start;
+  background: url("http://zh.9yuecloud.com/img/bg.970bc3a9.jpg") no-repeat;
+  background-size: 100% 100%;
 }
 
 .ivu-card {
