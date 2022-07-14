@@ -34,7 +34,7 @@
         :title="modalStatus==='add'?'添加用户':'修改用户'"
         @on-ok="handleSubmit('formInline')"
     >
-      {{ modalStatus }}
+ 
       <Form ref="formInline" :label-width="80" :model="formInline" :rules="ruleInline">
         <FormItem label="头像">
           <Avatar :src="formInline.avatar"

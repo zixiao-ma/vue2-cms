@@ -1,5 +1,6 @@
 <template>
   <div class="layout-header-bar">
+
     <div class="left">
       <Icon :class="rotateIcon" :style="{margin: '0 20px'}" size="24" type="md-menu"
             @click.native="collapsedSider"></Icon>
@@ -19,12 +20,35 @@
           <Icon type="ios-arrow-down"></Icon>
         </a>
         <DropdownMenu slot="list">
-          <DropdownItem name="toIndex">控制台</DropdownItem>
+          <DropdownItem name="setting">个人设置</DropdownItem>
           <DropdownItem name="logout">退出登录</DropdownItem>
         </DropdownMenu>
       </Dropdown>
+      <Modal
+          v-model="modal1"
+          title="个人设置"
+      >
+        <Form ref="formInline" :label-width="80" :model="formInline" :rules="ruleInline">
+          <FormItem label="头像">
+            <Avatar :src="userInfo.avatar"
+                    shape="square"/>
+          </FormItem>
+          <FormItem label="用户名" prop="username">
+            <Input v-model="formInline.username" placeholder="Username" type="text"></Input>
+          </FormItem>
+          <FormItem label="密码" prop="password">
+            <Input v-model="formInline.password" placeholder="Password" type="password">
+            </Input>
+          </FormItem>
+          <FormItem label="邮箱" prop="email">
+            <Input v-model="formInline.email" placeholder="email" type="email">
+            </Input>
+          </FormItem>
 
+        </Form>
+      </Modal>
     </div>
+
   </div>
 </template>
 
@@ -40,7 +64,15 @@ export default {
   },
   data() {
     return {
-      iconType: 'ios-expand'
+      modal1: false,
+      iconType: 'ios-expand',
+      formInline: {
+        username: 'duck',
+        password: '$2a$10$.Q0iGzEEscf3qv26utAS4OyUK9JwiZxcG47v09OooWHzu/3/PibkC',
+        email: '51318492321@qq.com',
+        status: 0,
+        avatar: 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-5a307996-a7f5-483d-a6f1-6ea9944b0d18/94d8e009-b183-4d54-a389-724181af5362.jpg'
+      },
     }
   },
   computed: {
@@ -85,8 +117,8 @@ export default {
       });
     },
     handlerDropdown(name) {
-      if (name === 'toIndex') {
-        this.$router.push('/')
+      if (name === 'setting') {
+        this.modal1 = true
       }
       if (name === 'logout') {
         this.logout()

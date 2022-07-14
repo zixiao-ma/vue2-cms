@@ -21,9 +21,10 @@ export const columns = [
 
     {
         title: '序号',
-        key: 'id',
+
         width: 80,
-        type: 'expand'
+       
+        tree: true
     },
     {
         title: '展示名称',
