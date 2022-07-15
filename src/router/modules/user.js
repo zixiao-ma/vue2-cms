@@ -1,7 +1,3 @@
-/**
- * @author MaZiXiao
- * @date 2022-07-07 20:36
- */
 export default {
   path: '/system',
   name: 'user-query',
@@ -9,7 +5,7 @@ export default {
   redirect: '/system/user',
   meta: {
     title: '系统管理',
-    icon: 'setting-outlined'
+    icon: 'setting-outlined',
   },
   children: [
     {
@@ -18,8 +14,8 @@ export default {
       component: () => import('@/views/user'),
       meta: {
         title: '用户管理',
-        icon: 'user-outlined'
-      }
-    }
-  ]
+        icon: 'user-outlined',
+      },
+    },
+  ],
 }

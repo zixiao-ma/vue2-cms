@@ -1,20 +1,28 @@
 <template>
   <div class="layout-header-bar">
-
     <div class="left">
-      <Icon :class="rotateIcon" :style="{margin: '0 20px'}" size="24" type="md-menu"
-            @click.native="collapsedSider"></Icon>
+      <Icon
+        :class="rotateIcon"
+        :style="{ margin: '0 20px' }"
+        size="24"
+        type="md-menu"
+        @click.native="collapsedSider"
+      ></Icon>
       <tags-view></tags-view>
     </div>
     <div class="right">
       <Tooltip content="全屏" placement="bottom">
-        <Icon :type="iconType" @click="screenfull"/>
+        <Icon :type="iconType" @click="screenfull" />
       </Tooltip>
       <Tooltip content="关闭所有标签" placement="bottom">
-        <Icon type="ios-close-circle-outline" @click="delAllTags"/>
+        <Icon type="ios-close-circle-outline" @click="delAllTags" />
       </Tooltip>
-      <Avatar :src="userInfo.avatar" shape="square"/>
-      <Dropdown style="margin-left: 20px" trigger="click" @on-click="handlerDropdown">
+      <Avatar :src="userInfo.avatar" shape="square" />
+      <Dropdown
+        style="margin-left: 20px"
+        trigger="click"
+        @on-click="handlerDropdown"
+      >
         <a class="username" href="javascript:void(0)">
           {{ userInfo.username }}
           <Icon type="ios-arrow-down"></Icon>
@@ -24,37 +32,39 @@
           <DropdownItem name="logout">退出登录</DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <Modal
-          v-model="modal1"
-          title="个人设置"
-      >
-        <Form ref="formInline" :label-width="80" :model="formInline" :rules="ruleInline">
+      <Modal v-model="modal1" title="个人设置">
+        <Form ref="formInline" :label-width="80" :model="formInline">
           <FormItem label="头像">
-            <Avatar :src="userInfo.avatar"
-                    shape="square"/>
+            <Avatar :src="userInfo.avatar" shape="square" />
           </FormItem>
           <FormItem label="用户名" prop="username">
-            <Input v-model="formInline.username" placeholder="Username" type="text"></Input>
+            <Input
+              v-model="formInline.username"
+              placeholder="Username"
+              type="text"
+            ></Input>
           </FormItem>
           <FormItem label="密码" prop="password">
-            <Input v-model="formInline.password" placeholder="Password" type="password">
+            <Input
+              v-model="formInline.password"
+              placeholder="Password"
+              type="password"
+            >
             </Input>
           </FormItem>
           <FormItem label="邮箱" prop="email">
             <Input v-model="formInline.email" placeholder="email" type="email">
             </Input>
           </FormItem>
-
         </Form>
       </Modal>
     </div>
-
   </div>
 </template>
 
 <script>
-import TagsView from "./tagsView";
-import {mapGetters} from "vuex";
+import TagsView from "./tagsView"
+import { mapGetters } from "vuex"
 import screenfull from 'screenfull'
 
 export default {
@@ -62,7 +72,7 @@ export default {
   components: {
     TagsView
   },
-  data() {
+  data () {
     return {
       modal1: false,
       iconType: 'ios-expand',
@@ -77,32 +87,32 @@ export default {
   },
   computed: {
     ...mapGetters(['userInfo']),
-    rotateIcon() {
+    rotateIcon () {
       return [
         'menu-icon',
         this.isCollapsed ? 'rotate-icon' : ''
-      ];
+      ]
     }
   },
 
   methods: {
-    collapsedSider() {
+    collapsedSider () {
       this.$emit('collapsedSider')
     },
-    screenfull() {
+    screenfull () {
       if (!screenfull.isEnabled) {
-        this.$message({message: '你的浏览器不支持全屏', type: 'warning'})
+        this.$message({ message: '你的浏览器不支持全屏', type: 'warning' })
         return false
       }
 
-      screenfull.toggle();
+      screenfull.toggle()
       this.iconType = !screenfull.isFullscreen ? 'ios-contract' : 'ios-expand'
 
     },
-    delAllTags() {
+    delAllTags () {
       this.$store.commit('tagsView/removeTag')
     },
-    logout() {
+    logout () {
       this.$Modal.confirm({
         title: '退出',
         content: '<p>您确定要退出登录吗？</p>',
@@ -110,13 +120,13 @@ export default {
         onOk: () => {
           setTimeout(() => {
             this.$store.commit('user/logout')
-            this.$Modal.remove();
-            this.$Message.success('退出成功！');
-          }, 1000);
+            this.$Modal.remove()
+            this.$Message.success('退出成功！')
+          }, 1000)
         }
-      });
+      })
     },
-    handlerDropdown(name) {
+    handlerDropdown (name) {
       if (name === 'setting') {
         this.modal1 = true
       }
@@ -130,7 +140,7 @@ export default {
 <style lang="scss" scoped>
 .layout-header-bar {
   background: #18bc9c;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   padding-right: 20px;
@@ -154,6 +164,5 @@ export default {
       margin: 0 10px;
     }
   }
-
 }
 </style>

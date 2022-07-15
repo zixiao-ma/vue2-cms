@@ -1,7 +1,3 @@
-/**
- * @author MaZiXiao
- * @date 2022-07-07 20:45
- */
 export default {
   path: '/system',
   name: 'role-query',
@@ -9,7 +5,7 @@ export default {
   redirect: '/system/user',
   meta: {
     title: '系统管理',
-    icon: 'setting-outlined'
+    icon: 'setting-outlined',
   },
   children: [
     {
@@ -18,8 +14,8 @@ export default {
       component: () => import('@/views/role'),
       meta: {
         title: '角色管理',
-        icon: 'bars-outlined'
-      }
-    }
-  ]
+        icon: 'bars-outlined',
+      },
+    },
+  ],
 }

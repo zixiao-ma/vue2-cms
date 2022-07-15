@@ -1,7 +1,3 @@
-/**
- * @author MaZiXiao
- * @date 2022-07-07 20:43
- */
 export default {
   path: '/system',
   name: 'menu_query',
@@ -9,7 +5,7 @@ export default {
   redirect: '/system/user',
   meta: {
     title: '系统管理',
-    icon: 'setting-outlined'
+    icon: 'setting-outlined',
   },
   children: [
     {
@@ -18,8 +14,8 @@ export default {
       component: () => import('@/views/menu'),
       meta: {
         title: '菜单管理',
-        icon: 'file-search-outlined'
-      }
-    }
-  ]
+        icon: 'file-search-outlined',
+      },
+    },
+  ],
 }
